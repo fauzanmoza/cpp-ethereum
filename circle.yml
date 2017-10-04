@@ -42,6 +42,13 @@ defaults:
           export TMPDIR=/dev/shm
         fi
         export ETHEREUM_TEST_PATH=~/project/test/jsontests
+
+        # If the DAG file does not exist, we have to run a single test with mining
+        # to create it before we can run tests in parallel.
+        if [ ! -f ~/.ethash/full-R23-0000000000000000 ]; then
+          test/testeth -t BlockChainSuite/updateStats
+        fi
+
         ctest --output-on-failure -j $TEST_PARALLEL_JOBS
 
   store-eth: &store-eth
